@@ -110,7 +110,7 @@ def log_to_file(time_log, acc, multiplier_name, model_name, filepath):
 
 def main():
     # hw for group 05
-    axx_mult_list = ['SPR_9_62', 'SPR_12_52']
+    axx_mult_list = ['Exact', 'SPR_9_62', 'SPR_12_52']
     for axx_mult in axx_mult_list:
         model_1 = resnet34(pretrained=True, axx_mult = axx_mult)
         model_2 = densenet121(pretrained=True, axx_mult = axx_mult)
