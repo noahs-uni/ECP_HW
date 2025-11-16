@@ -1,6 +1,6 @@
 multiplier: Exact
 model: resnet34
-Inference time: 92.3173 s
+Inference time: 52.3173 s
 Accuracy of the network on the 10000 test images: 93.2893 %
 =================================================
 multiplier: Exact
