@@ -1,6 +1,6 @@
 multiplier: Exact
 model: resnet34
-Inference time: 52.3173 s
+Inference time: 92.3173 s
 Accuracy of the network on the 10000 test images: 93.2893 %
 =================================================
 multiplier: Exact
@@ -27,4 +27,34 @@ multiplier: SPR_12_52
 model: densenet121
 Inference time: 66.7739 s
 Accuracy of the network on the 10000 test images: 86.8490 %
+=================================================
+multiplier: Exact
+model: resnet34
+Inference time: 89.8526 s
+Accuracy of the network on the 10000 test images: 93.2792 %
+=================================================
+multiplier: Exact
+model: densenet121
+Inference time: 79.4960 s
+Accuracy of the network on the 10000 test images: 93.8702 %
+=================================================
+multiplier: SPR_9_62
+model: resnet34
+Inference time: 92.4059 s
+Accuracy of the network on the 10000 test images: 13.8421 %
+=================================================
+multiplier: SPR_9_62
+model: densenet121
+Inference time: 63.0094 s
+Accuracy of the network on the 10000 test images: 20.9936 %
+=================================================
+multiplier: SPR_12_52
+model: resnet34
+Inference time: 49.9118 s
+Accuracy of the network on the 10000 test images: 85.1663 %
+=================================================
+multiplier: SPR_12_52
+model: densenet121
+Inference time: 63.2364 s
+Accuracy of the network on the 10000 test images: 86.6887 %
 =================================================
