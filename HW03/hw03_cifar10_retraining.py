@@ -19,6 +19,8 @@ from pytorch_quantization import calib
 
 import timeit
 
+from adapt.references.classification.train import evaluate, train_one_epoch, load_data
+
 threads = 40
 torch.set_num_threads(threads)
 
@@ -110,14 +112,14 @@ def log_to_file(time_log, acc, multiplier_name, network_name, filepath):
 
 def main():
     # hw for group 05
-    axx_mult_list = ['Exact', 'SPR_9_62', 'SPR_12_52']
+    axx_mult_list = ['SPR_9_62', 'SPR_12_52']
     for axx_mult in axx_mult_list:
-        model_1 = resnet34(pretrained=True, axx_mult = axx_mult)
-        model_2 = densenet121(pretrained=True, axx_mult = axx_mult)
+        model_1 = resnet34(pretrained=True, axx_mult=axx_mult)
+        model_2 = densenet121(pretrained=True, axx_mult=axx_mult)
         model_list = [model_1, model_2]
         network_name_list = ['resnet34', 'densenet121']
         for model, network_name in zip(model_list, network_name_list):
-            model.eval()
+            # model.eval()
 
             # load dataset
             transform = T.Compose(
@@ -138,16 +140,25 @@ def main():
             data_t = DataLoader(trainset_1, batch_size=128,
                                                         shuffle=False, num_workers=0)
             
-            # Calibrates the quantization parameters
-            # It is a bit slow since we collect histograms on CPU
-            with torch.no_grad():
-                stats = collect_stats(model, data_t, num_batches=2)
-                amax = compute_amax(model, method="percentile", percentile=99.99)
+
                 
                 # optional - test different calibration methods
                 #amax = compute_amax(model, method="mse")
                 #amax = compute_amax(model, method="entropy")
             
+            criterion = nn.CrossEntropyLoss()
+            optimizer = torch.optim.SGD(model.parameters(), lr=0.0001)
+            lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1)
+            epochs = 25
+            
+            for epoch in range(epochs):
+                train_one_epoch(model, criterion, optimizer, data_t, "cpu", epoch=epoch+1, print_freq=1)
+                if (epoch + 1) % 5 == 0:
+                    weights_name = 'epoch_' + str(epoch+1) + '_' + network_name + '_' + axx_mult + '.pt'
+                    save_directory = 'models/state_dicts/'
+                    torch.save(model.state_dict(), save_directory + weights_name)
+                    print(f"saved to: {weights_name}")
+
             # model evaluation    
             correct = 0
             total = 0
@@ -165,12 +176,13 @@ def main():
             acc = 100 * correct / total
             print(time_log)
             print('Accuracy of the network on the 10000 test images: %.4f %%' % acc)
+            
             log_to_file(
                 time_log=time_log,
                 acc=acc,
                 multiplier_name=axx_mult,
                 network_name=network_name,
-                filepath='model_inference_result.log'
+                filepath='retrained_25epochs_model_inference_result.log'
             )
         
 
